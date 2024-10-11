@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>全屏视频播放</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    html, body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    /* 渐变色背景 */
+    html {
+        background: radial-gradient(circle, #E2E2E2 0%, #FFFFFF 48.78%, #CCCFD1 100%);
+        background: -webkit-radial-gradient(circle, #E2E2E2 0%, #FFFFFF 48.78%, #CCCFD1 100%);
+        background: -moz-radial-gradient(circle, #E2E2E2 0%, #FFFFFF 48.78%, #CCCFD1 100%);
+        background: -o-radial-gradient(circle, #E2E2E2 0%, #FFFFFF 48.78%, #CCCFD1 100%);
+        background: -ms-radial-gradient(circle, #E2E2E2 0%, #FFFFFF 48.78%, #CCCFD1 100%);
+    }
+
+    #container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        object-fit: contain;
+        width: auto;
+        height: 100%; /* 确保视频高度与屏幕一致 */
+    }
+
+    #video_controls {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%); 
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    #video_controls button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #fff;
+        border: none;
+        border-radius: 5px;
+    }
+
+    #video_controls button:last-child {
+        margin-bottom: 0;
+    }
+</style>
+</head>
+<body>
+<div id="container">
+    <video id="background_video" autoplay muted>
+        <!-- 替换下面的视频链接为你的视频文件链接 -->
+        <source src="默认女.webm" type="video/webm">
+        Your browser does not support the video tag.
+    </video>
+    <div id="video_controls">
+        <button id="mute">静音</button>
+        <button id="pause">暂停</button>
+        <button id="replay">重播</button>
+        <button id="fast_forward">快进 10 秒</button>
+        <button id="rewind">倒退 10 秒</button> <!-- 新增倒退按钮 -->
+    </div>
+</div>
+
+<script>
+    var video = document.querySelector('video'),
+        container = document.querySelector('#container'),
+        muteButton = document.getElementById('mute'),
+        pauseButton = document.getElementById('pause'),
+        replayButton = document.getElementById('replay'),
+        fastForwardButton = document.getElementById('fast_forward'),
+        rewindButton = document.getElementById('rewind'); // 新增倒退按钮的变量
+    
+    // 视频播放完成事件
+    video.addEventListener('ended', function () {
+        video.pause(); // 视频播放完成时暂停
+        video.currentTime = 0;
+    });
+    
+    // 静音按钮事件
+    muteButton.addEventListener('click', function () {
+        if (video.muted) {
+            video.muted = false;
+            muteButton.textContent = '静音';
+        } else {
+            video.muted = true;
+            muteButton.textContent = '取消静音';
+        }
+    });
+    
+    // 暂停按钮事件
+    pauseButton.addEventListener('click', function () {
+        if (video.paused) {
+            video.play();
+            pauseButton.textContent = '暂停';
+        } else {
+            video.pause();
+            pauseButton.textContent = '播放';
+        }
+    });
+    
+    // 重播按钮事件
+    replayButton.addEventListener('click', function () {
+        video.currentTime = 0;
+        video.play();
+    });
+    
+    // 快进按钮事件
+    fastForwardButton.addEventListener('click', function () {
+        video.currentTime += 10; // 快进10秒
+    });
+    
+    // 新增倒退按钮事件
+    rewindButton.addEventListener('click', function () {
+        video.currentTime -= 10; // 倒退10秒
+    });
+    
+    // 初始调整视频方向
+    function adjustVideoForOrientation() {
+        if (window.innerWidth > window.innerHeight) {
+            // 横屏模式
+            video.style.objectPosition = 'top';
+        } else {
+            // 竖屏模式
+            video.style.objectPosition = 'center';
+        }
+    }
+    
+    // 添加事件监听器
+    window.addEventListener('load', adjustVideoForOrientation);
+    window.addEventListener('resize', adjustVideoForOrientation);
+    
+    // 初始调整
+    adjustVideoForOrientation();
+</script>
+</body>
+</html>
